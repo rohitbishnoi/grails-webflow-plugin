@@ -22,7 +22,9 @@ grails.project.dependency.resolution = {
 			exclude group:"commons-logging", name:"commons-logging"												
 			transitive = false
 		}
-		runtime 'ognl:ognl:2.7.3'
+		runtime( 'ognl:ognl:2.7.3' ) {
+			exclude group:"jboss", name:"javassist"														    
+		}
 
     }
 
