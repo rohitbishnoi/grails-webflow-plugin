@@ -1,0 +1,377 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+                      "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en">
+    <head>
+        <title>Spring Web Flow Plugin 2.1.0</title>
+        <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+        <link rel="stylesheet" href="../css/main.css" type="text/css" media="screen, print" title="Style" charset="utf-8" />
+        <link rel="stylesheet" href="../css/pdf.css" type="text/css" media="print" title="PDF" charset="utf-8" />
+    <script type="text/javascript">
+function addJsClass(el) {
+    var classes = document.body.className.split(" ");
+    classes.push("js");
+    document.body.className = classes.join(" ");
+}
+    </script>
+    </head>
+
+    <body class="body" onload="addJsClass();">
+        <div id="navigation">
+            <ul>
+                <li>
+                    <div id="nav-summary" onmouseover="toggleNavSummary(false)" onmouseout="toggleNavSummary(true)">
+                        <a href="../guide/index.html" class="button">Table of contents</a>
+                        <div id="nav-summary-childs" style="display:none;">
+                            
+                            <div class="toc-item" style="margin-left:0"><a href="#introduction"><strong>1</strong><span>Introduction</span></a></div>
+                            
+                            <div class="toc-item" style="margin-left:0"><a href="#startAndEndStates"><strong>2</strong><span>Start and End States</span></a></div>
+                            
+                            <div class="toc-item" style="margin-left:0"><a href="#actionStatesAndViewStates"><strong>3</strong><span>Action States and View States</span></a></div>
+                            
+                            <div class="toc-item" style="margin-left:0"><a href="#flowExecutionEvents"><strong>4</strong><span>Flow Execution Events</span></a></div>
+                            
+                            <div class="toc-item" style="margin-left:0"><a href="#flowScopes"><strong>5</strong><span>Flow Scopes</span></a></div>
+                            
+                            <div class="toc-item" style="margin-left:0"><a href="#dataBindingAndValidation"><strong>6</strong><span>Data Binding and Validation</span></a></div>
+                            
+                            <div class="toc-item" style="margin-left:0"><a href="#subflowsAndConversations"><strong>7</strong><span>Subflows and Conversations</span></a></div>
+                            
+                        </div>
+                    </div>
+                </li>
+                <li class="separator selected">
+                    <a id="ref-button" onclick="localToggle(); return false;" href="#">Quick Reference</a>
+                </li>
+            </ul>
+        </div>
+        <div id="header">
+            <div class="images clearfix">
+                
+                
+            </div>
+            <p>Integrates Spring Web Flow with Grails</p>
+        </div>
+
+
+        <table id="colset" border="0" cellpadding="0" cellspacing="0">
+            <tr>
+                <td id="col1">
+                    <div id="main" class="corner-all">
+
+                        <span id='toggle-col1' class="toggle">(<a href="#" onclick="localToggle(); return false;">Quick Reference</a>)</span>
+
+                        <div class="project">
+                            <h1>Spring Web Flow Plugin - Reference Documentation</h1>
+                            <p><strong>Authors:</strong> Graeme Rocher</p>
+                            <p><strong>Version:</strong> 2.1.0</p>
+                            
+                        </div>
+
+                        
+                        <div id="table-of-content">
+                            <h2>Table of Contents</h2>
+                            
+                            <div class="toc-item" style="margin-left:0px"><a href="#introduction"><strong>1</strong><span>Introduction</span></a></div>
+                            
+                            <div class="toc-item" style="margin-left:0px"><a href="#startAndEndStates"><strong>2</strong><span>Start and End States</span></a></div>
+                            
+                            <div class="toc-item" style="margin-left:0px"><a href="#actionStatesAndViewStates"><strong>3</strong><span>Action States and View States</span></a></div>
+                            
+                            <div class="toc-item" style="margin-left:0px"><a href="#flowExecutionEvents"><strong>4</strong><span>Flow Execution Events</span></a></div>
+                            
+                            <div class="toc-item" style="margin-left:0px"><a href="#flowScopes"><strong>5</strong><span>Flow Scopes</span></a></div>
+                            
+                            <div class="toc-item" style="margin-left:0px"><a href="#dataBindingAndValidation"><strong>6</strong><span>Data Binding and Validation</span></a></div>
+                            
+                            <div class="toc-item" style="margin-left:0px"><a href="#subflowsAndConversations"><strong>7</strong><span>Subflows and Conversations</span></a></div>
+                            
+                            <div style="clear:both" ></div>
+                        </div>
+                        
+                        
+
+<h1 id="introduction">1 Introduction</h1>
+<h4>Overview</h4><p class="paragraph"/>Grails supports the creation of web flows built on the <a href="http://www.springsource.org/webflow" target="blank">Spring Web Flow</a> project. A web flow is a conversation that spans multiple requests and retains state for the scope of the flow. A web flow also has a defined start and end state.<p class="paragraph"/>Web flows don't require an HTTP session, but instead store their state in a serialized form, which is then restored using a flow execution key that Grails passes around as a request parameter. This makes flows far more scalable than other forms of stateful application that use the HttpSession and its inherit memory and clustering concerns.<p class="paragraph"/>Web flow is essentially an advanced state machine that manages the "flow" of execution from one state to the next. Since the state is managed for you, you don't have to be concerned with ensuring that users enter an action in the middle of some multi step flow, as web flow manages that for you. This makes web flow perfect for use cases such as shopping carts, hotel booking and any application that has multi page work flows.<p class="paragraph"/><blockquote class="note">
+From Grails 1.2 onwards Webflow is no longer in Grails core, so you must install the Webflow plugin to use this feature.
+</blockquote><p class="paragraph"/><h4>Creating a Flow</h4><p class="paragraph"/>To create a flow create a regular Grails controller and add an action that ends with the convention <code>Flow</code>. For example:<p class="paragraph"/><div class="code"><pre>class BookController &#123;<p class="paragraph"/>   def index() &#123;
+      redirect(action: <span class="java&#45;quote">"shoppingCart"</span>)
+   &#125;<p class="paragraph"/>   def shoppingCartFlow = &#123;
+        &#8230;
+   &#125;
+&#125;</pre></div><p class="paragraph"/>Notice when redirecting or referring to the flow as an action we omit the <code>Flow</code> suffix. In other words the name of the action of the above flow is <code>shoppingCart</code>.
+
+
+
+<h1 id="startAndEndStates">2 Start and End States</h1>
+As mentioned before a flow has a defined start and end state. A start state is the state which is entered when a user first initiates a conversation (or flow). The start state of a Grails flow is the first method call that takes a block. For example:<p class="paragraph"/><div class="code"><pre>class BookController &#123;
+   &#8230;
+   def shoppingCartFlow =&#123;
+       showCart &#123;
+           on(<span class="java&#45;quote">"checkout"</span>).to <span class="java&#45;quote">"enterPersonalDetails"</span>
+           on(<span class="java&#45;quote">"continueShopping"</span>).to <span class="java&#45;quote">"displayCatalogue"</span>
+       &#125;
+       &#8230;
+       displayCatalogue &#123;
+           redirect(controller: <span class="java&#45;quote">"catalogue"</span>, action: <span class="java&#45;quote">"show"</span>)
+       &#125;
+       displayInvoice()
+   &#125;
+&#125;</pre></div><p class="paragraph"/>Here the <code>showCart</code> node is the start state of the flow. Since the showCart state doesn't define an action or redirect it is assumed be a <a href="../guide/single.html#actionStatesAndViewStates" class="guide">view state</a> that, by convention, refers to the view  <code>grails-app/views/book/shoppingCart/showCart.gsp</code>.<p class="paragraph"/>Notice that unlike regular controller actions, the views are stored within a directory that matches the name of the flow: <code>grails-app/views/book/shoppingCart</code>.<p class="paragraph"/>The <code>shoppingCart</code> flow also has two possible end states. The first is <code>displayCatalogue</code> which performs an external redirect to another controller and action, thus exiting the flow. The second is <code>displayInvoice</code> which is an end state as it has no events at all and will simply render a view called <code>grails-app/views/book/shoppingCart/displayInvoice.gsp</code> whilst ending the flow at the same time.<p class="paragraph"/>Once a flow has ended it can only be resumed from the start state, in this case <code>showCart</code>, and not from any other state.
+
+
+
+<h1 id="actionStatesAndViewStates">3 Action States and View States</h1>
+<h4>View states</h4><p class="paragraph"/>A view state is a one that doesn't define an <code>action</code> or a <code>redirect</code>. So for example this is a view state:<p class="paragraph"/><div class="code"><pre>enterPersonalDetails &#123;
+   on(<span class="java&#45;quote">"submit"</span>).to <span class="java&#45;quote">"enterShipping"</span>
+   on(<span class="java&#45;quote">"<span class="java&#45;keyword">return</span>"</span>).to <span class="java&#45;quote">"showCart"</span>
+&#125;</pre></div><p class="paragraph"/>It will look for a view called <code>grails-app/views/book/shoppingCart/enterPersonalDetails.gsp</code> by default. Note that the <code>enterPersonalDetails</code> state defines two events: <code>submit</code> and <code>return</code>. The view is responsible for <a href="../guide/single.html#flowExecutionEvents" class="guide">triggering</a> these events. Use the <code>render</code> method to change the view to be rendered:<p class="paragraph"/><div class="code"><pre>enterPersonalDetails &#123;
+   render(view: <span class="java&#45;quote">"enterDetailsView"</span>)
+   on(<span class="java&#45;quote">"submit"</span>).to <span class="java&#45;quote">"enterShipping"</span>
+   on(<span class="java&#45;quote">"<span class="java&#45;keyword">return</span>"</span>).to <span class="java&#45;quote">"showCart"</span>
+&#125;</pre></div><p class="paragraph"/>Now it will look for <code>grails-app/views/book/shoppingCart/enterDetailsView.gsp</code>. Start the <code>view</code> parameter with a / to use a shared view:<p class="paragraph"/><div class="code"><pre>enterPersonalDetails &#123;
+   render(view: <span class="java&#45;quote">"/shared/enterDetailsView"</span>)
+   on(<span class="java&#45;quote">"submit"</span>).to <span class="java&#45;quote">"enterShipping"</span>
+   on(<span class="java&#45;quote">"<span class="java&#45;keyword">return</span>"</span>).to <span class="java&#45;quote">"showCart"</span>
+&#125;</pre></div><p class="paragraph"/>Now it will look for <code>grails-app/views/shared/enterDetailsView.gsp</code><p class="paragraph"/><h4>Action States</h4><p class="paragraph"/>An action state is a state that executes code but does not render a view. The result of the action is used to dictate flow transition. To create an action state you define an action to to be executed. This is done by calling the <code>action</code> method and passing it a block of code to be executed:<p class="paragraph"/><div class="code"><pre>listBooks &#123;
+   action &#123;
+      &#91;bookList: Book.list()&#93;
+   &#125;
+   on(<span class="java&#45;quote">"success"</span>).to <span class="java&#45;quote">"showCatalogue"</span>
+   on(Exception).to <span class="java&#45;quote">"handleError"</span>
+&#125;</pre></div><p class="paragraph"/>As you can see an action looks very similar to a controller action and in fact you can reuse controller actions if you want. If the action successfully returns with no errors the <code>success</code> event will be triggered. In this case since we return a Map, which is regarded as the "model" and is automatically placed in <a href="../guide/single.html#flowScopes" class="guide">flow scope</a>.<p class="paragraph"/>In addition, in the above example we also use an exception handler to deal with errors on the line:<p class="paragraph"/><div class="code"><pre>on(Exception).to <span class="java&#45;quote">"handleError"</span></pre></div><p class="paragraph"/>This makes the flow transition to a state called <code>handleError</code> in the case of an exception.<p class="paragraph"/>You can write more complex actions that interact with the flow request context:<p class="paragraph"/><div class="code"><pre>processPurchaseOrder &#123;
+    action &#123;
+        def a =  flow.address
+        def p = flow.person
+        def pd = flow.paymentDetails
+        def cartItems = flow.cartItems
+        flow.clear()<p class="paragraph"/>        def o = <span class="java&#45;keyword">new</span> Order(person: p, shippingAddress: a, paymentDetails: pd)
+        o.invoiceNumber = <span class="java&#45;keyword">new</span> Random().nextInt(9999999)
+        <span class="java&#45;keyword">for</span> (item in cartItems) &#123; o.addToItems item &#125;
+        o.save()
+        &#91;order: o&#93;
+    &#125;
+    on(<span class="java&#45;quote">"error"</span>).to <span class="java&#45;quote">"confirmPurchase"</span>
+    on(Exception).to <span class="java&#45;quote">"confirmPurchase"</span>
+    on(<span class="java&#45;quote">"success"</span>).to <span class="java&#45;quote">"displayInvoice"</span>
+&#125;</pre></div><p class="paragraph"/>Here is a more complex action that gathers all the information accumulated from the flow scope and creates an <code>Order</code> object. It then returns the order as the model. The important thing to note here is the interaction with the request context and "flow scope".<p class="paragraph"/><h4>Transition Actions</h4><p class="paragraph"/>Another form of action is what is known as a  <em class="italic">transition</em>  action. A transition action is executed directly prior to state transition once an <a href="../guide/single.html#flowExecutionEvents" class="guide">event</a> has been triggered. A simple example of a transition action can be seen below:<p class="paragraph"/><div class="code"><pre>enterPersonalDetails &#123;
+   on(<span class="java&#45;quote">"submit"</span>) &#123;
+       log.trace <span class="java&#45;quote">"Going to enter shipping"</span>
+   &#125;.to <span class="java&#45;quote">"enterShipping"</span>
+   on(<span class="java&#45;quote">"<span class="java&#45;keyword">return</span>"</span>).to <span class="java&#45;quote">"showCart"</span>
+&#125;</pre></div><p class="paragraph"/>Notice how we pass a block of the code to <code>submit</code> event that simply logs the transition. Transition states are very useful for <a href="../guide/single.html#dataBindingAndValidation" class="guide">data binding and validation</a>, which is covered in a later section.
+
+
+
+<h1 id="flowExecutionEvents">4 Flow Execution Events</h1>
+In order to  <em class="italic">transition</em>  execution of a flow from one state to the next you need some way of trigger an  <em class="italic">event</em>  that indicates what the flow should do next. Events can be triggered from either view states or action states.<p class="paragraph"/><h4>Triggering Events from a View State</h4><p class="paragraph"/>As discussed previously the start state of the flow in a previous code listing deals with two possible events. A <code>checkout</code> event and a <code>continueShopping</code> event:<p class="paragraph"/><div class="code"><pre>def shoppingCartFlow = &#123;
+    showCart &#123;
+        on(<span class="java&#45;quote">"checkout"</span>).to <span class="java&#45;quote">"enterPersonalDetails"</span>
+        on(<span class="java&#45;quote">"continueShopping"</span>).to <span class="java&#45;quote">"displayCatalogue"</span>
+    &#125;
+    &#8230;
+&#125;</pre></div><p class="paragraph"/>Since the <code>showCart</code> event is a view state it will render the view <code>grails-app/book/shoppingCart/showCart.gsp</code>. Within this view you need to have components that trigger flow execution. On a form this can be done use the tags tag:<p class="paragraph"/><div class="code"><pre><span class="xml&#45;tag">&#60;g:form&#62;</span>
+    <span class="xml&#45;tag">&#60;g:submitButton name=<span class="xml&#45;quote">"continueShopping"</span> value=<span class="xml&#45;quote">"Continue Shopping"</span> /&#62;</span>
+    <span class="xml&#45;tag">&#60;g:submitButton name=<span class="xml&#45;quote">"checkout"</span> value=<span class="xml&#45;quote">"Checkout"</span> /&#62;</span>
+<span class="xml&#45;tag">&#60;/g:form&#62;</span></pre></div><p class="paragraph"/>The form automatically submits back to the <code>shoppingCart</code> flow. The name attribute of each tags tag signals which event will be triggered. If you don't have a form you can also trigger an event with the tags tag as follows:<p class="paragraph"/><div class="code"><pre><span class="xml&#45;tag">&#60;g:link event=<span class="xml&#45;quote">"checkout"</span> /&#62;</span></pre></div><p class="paragraph"/><blockquote class="note">
+Prior to 2.0.0, it was required to specify the controller and/or action in forms and links, which caused the url to change when entering a subflow state. When the controller and action are not specified,
+all url's are relative to the main flow execution url, which makes your flows reusable as subflows and prevents issues with the browser's back button.
+</blockquote><p class="paragraph"/><h4>Triggering Events from an Action</h4><p class="paragraph"/>To trigger an event from an <code>action</code> you invoke a method. For example there is the built in <code>error()</code> and <code>success()</code> methods. The example below triggers the <code>error()</code> event on validation failure in a transition action:<p class="paragraph"/><div class="code"><pre>enterPersonalDetails &#123;
+   on(<span class="java&#45;quote">"submit"</span>) &#123;
+         def p = <span class="java&#45;keyword">new</span> Person(params)
+         flow.person = p
+         <span class="java&#45;keyword">if</span> (!p.validate()) <span class="java&#45;keyword">return</span> error()
+   &#125;.to <span class="java&#45;quote">"enterShipping"</span>
+   on(<span class="java&#45;quote">"<span class="java&#45;keyword">return</span>"</span>).to <span class="java&#45;quote">"showCart"</span>
+&#125;</pre></div><p class="paragraph"/>In this case because of the error the transition action will make the flow go back to the <code>enterPersonalDetails</code> state.<p class="paragraph"/>With an action state you can also trigger events to redirect flow:<p class="paragraph"/><div class="code"><pre>shippingNeeded &#123;
+   action &#123;
+       <span class="java&#45;keyword">if</span> (params.shippingRequired) yes()
+       <span class="java&#45;keyword">else</span> no()
+   &#125;
+   on(<span class="java&#45;quote">"yes"</span>).to <span class="java&#45;quote">"enterShipping"</span>
+   on(<span class="java&#45;quote">"no"</span>).to <span class="java&#45;quote">"enterPayment"</span>
+&#125;</pre></div><p class="paragraph"/>
+
+
+<h1 id="flowScopes">5 Flow Scopes</h1>
+<h4>Scope Basics</h4><p class="paragraph"/>You'll notice from previous examples that we used a special object called <code>flow</code> to store objects within "flow scope". Grails flows have five different scopes you can utilize:
+<ul class="star">
+<li><code>request</code> - Stores an object for the scope of the current request</li>
+<li><code>flash</code> - Stores the object for the current and next request only</li>
+<li><code>flow</code> - Stores objects for the scope of the flow, removing them when the flow reaches an end state</li>
+<li><code>conversation</code> - Stores objects for the scope of the conversation including the root flow and nested subflows</li>
+<li><code>session</code> - Stores objects in the user's session</li>
+</ul><p class="paragraph"/><blockquote class="note">
+Grails service classes can be automatically scoped to a web flow scope. See the documentation on guide:services for more information.
+</blockquote><p class="paragraph"/>Returning a model Map from an action will automatically result in the model being placed in flow scope. For example, using a transition action, you can place objects within <code>flow</code> scope as follows:<p class="paragraph"/><div class="code"><pre>enterPersonalDetails &#123;
+    on(<span class="java&#45;quote">"submit"</span>) &#123;
+        &#91;person: <span class="java&#45;keyword">new</span> Person(params)&#93;
+    &#125;.to <span class="java&#45;quote">"enterShipping"</span>
+   on(<span class="java&#45;quote">"<span class="java&#45;keyword">return</span>"</span>).to <span class="java&#45;quote">"showCart"</span>
+&#125;</pre></div><p class="paragraph"/>Be aware that a new request is always created for each state, so an object placed in request scope in an action state (for example) will not be available in a subsequent view state. Use one of the other scopes to pass objects from one state to another. Also note that Web Flow:
+<ol>
+<li>Moves objects from flash scope to request scope upon transition between states;</li>
+<li>Merges objects from the flow and conversation scopes into the view model before rendering (so you shouldn't include a scope prefix when referencing these objects within a view, e.g. GSP pages).</li>
+</ol><p class="paragraph"/><h4>Flow Scopes and Serialization</h4><p class="paragraph"/>When placing objects in <code>flash</code>, <code>flow</code> or <code>conversation</code> scope they must implement <code>java.io.Serializable</code> or an exception will be thrown. This has an impact on guide:GORM in that domain classes are typically placed within a scope so that they can be rendered in a view. For example consider the following domain class:<p class="paragraph"/><div class="code"><pre>class Book &#123;
+    <span class="java&#45;object">String</span> title
+&#125;</pre></div><p class="paragraph"/>To place an instance of the <code>Book</code> class in a flow scope you will need to modify it as follows:<p class="paragraph"/><div class="code"><pre>class Book <span class="java&#45;keyword">implements</span> Serializable &#123;
+    <span class="java&#45;object">String</span> title
+&#125;</pre></div><p class="paragraph"/>This also impacts associations and closures you declare within a domain class. For example consider this:<p class="paragraph"/><div class="code"><pre>class Book <span class="java&#45;keyword">implements</span> Serializable &#123;
+    <span class="java&#45;object">String</span> title
+    Author author
+&#125;</pre></div><p class="paragraph"/>Here if the <code>Author</code> association is not <code>Serializable</code> you will also get an error. This also impacts closures used in guide:eventsAutoTimestamping such as <code>onLoad</code>, <code>onSave</code> and so on. The following domain class will cause an error if an instance is placed in a flow scope:<p class="paragraph"/><div class="code"><pre>class Book <span class="java&#45;keyword">implements</span> Serializable &#123;<p class="paragraph"/>    <span class="java&#45;object">String</span> title<p class="paragraph"/>    def onLoad = &#123;
+        println <span class="java&#45;quote">"I'm loading"</span>
+    &#125;
+&#125;</pre></div><p class="paragraph"/>The reason is that the assigned block on the <code>onLoad</code> event cannot be serialized. To get around this you should declare all events as <code>transient</code>:<p class="paragraph"/><div class="code"><pre>class Book <span class="java&#45;keyword">implements</span> Serializable &#123;<p class="paragraph"/>    <span class="java&#45;object">String</span> title<p class="paragraph"/>    <span class="java&#45;keyword">transient</span> onLoad = &#123;
+        println <span class="java&#45;quote">"I'm loading"</span>
+    &#125;
+&#125;</pre></div><p class="paragraph"/>or as methods:<p class="paragraph"/><div class="code"><pre>class Book <span class="java&#45;keyword">implements</span> Serializable &#123;<p class="paragraph"/>    <span class="java&#45;object">String</span> title<p class="paragraph"/>    def onLoad() &#123;
+        println <span class="java&#45;quote">"I'm loading"</span>
+    &#125;
+&#125;</pre></div><p class="paragraph"/><blockquote class="note">
+The flow scope contains a reference to the Hibernate session. As a result, any object loaded into the session through a GORM query will also be in the flow and will need to implement Serializable.<p class="paragraph"/>If you don't want your domain class to be Serializable or stored in the flow, then you will need to evict the entity manually before the end of the state:<p class="paragraph"/><div class="code"><pre>flow.persistenceContext.evict(it)</pre></div>
+</blockquote>
+
+
+
+<h1 id="dataBindingAndValidation">6 Data Binding and Validation</h1>
+In the section on <a href="../guide/single.html#startAndEndStates" class="guide">start and end states</a>, the start state in the first example triggered a transition to the <code>enterPersonalDetails</code> state. This state renders a view and waits for the user to enter the required information:<p class="paragraph"/><div class="code"><pre>enterPersonalDetails &#123;
+   on(<span class="java&#45;quote">"submit"</span>).to <span class="java&#45;quote">"enterShipping"</span>
+   on(<span class="java&#45;quote">"<span class="java&#45;keyword">return</span>"</span>).to <span class="java&#45;quote">"showCart"</span>
+&#125;</pre></div><p class="paragraph"/>The view contains a form with two submit buttons that either trigger the submit event or the return event:<p class="paragraph"/><div class="code"><pre><span class="xml&#45;tag">&#60;g:form&#62;</span>
+    <span class="xml&#45;comment">&#60;!&#45;&#45; Other fields &#45;&#45;&#62;</span>
+    <span class="xml&#45;tag">&#60;g:submitButton name=<span class="xml&#45;quote">"submit"</span> value=<span class="xml&#45;quote">"Continue"</span>&#62;</span><span class="xml&#45;tag">&#60;/g:submitButton&#62;</span>
+    <span class="xml&#45;tag">&#60;g:submitButton name=<span class="xml&#45;quote">"return"</span> value=<span class="xml&#45;quote">"Back"</span>&#62;</span><span class="xml&#45;tag">&#60;/g:submitButton&#62;</span>
+<span class="xml&#45;tag">&#60;/g:form&#62;</span></pre></div><p class="paragraph"/>However, what about the capturing the information submitted by the form? To capture the form info we can use a flow transition action:<p class="paragraph"/><div class="code"><pre>enterPersonalDetails &#123;
+   on(<span class="java&#45;quote">"submit"</span>) &#123;
+      flow.person = <span class="java&#45;keyword">new</span> Person(params)
+      !flow.person.validate() ? error() : success()
+   &#125;.to <span class="java&#45;quote">"enterShipping"</span>
+   on(<span class="java&#45;quote">"<span class="java&#45;keyword">return</span>"</span>).to <span class="java&#45;quote">"showCart"</span>
+&#125;</pre></div><p class="paragraph"/>Notice how we perform data binding from request parameters and place the <code>Person</code> instance within <code>flow</code> scope. Also interesting is that we perform guide:validation and invoke the <code>error()</code> method if validation fails. This signals to the flow that the transition should halt and return to the <code>enterPersonalDetails</code> view so valid entries can be entered by the user, otherwise the transition should continue and go to the <code>enterShipping</code> state.<p class="paragraph"/>Like regular actions, flow actions also support the notion of guide:commandObjects by defining the first argument of the closure:<p class="paragraph"/><div class="code"><pre>enterPersonalDetails &#123;
+   on(<span class="java&#45;quote">"submit"</span>) &#123; PersonDetailsCommand cmd &#45;&#62;
+       flow.personDetails = cmd
+      !flow.personDetails.validate() ? error() : success()
+   &#125;.to <span class="java&#45;quote">"enterShipping"</span>
+   on(<span class="java&#45;quote">"<span class="java&#45;keyword">return</span>"</span>).to <span class="java&#45;quote">"showCart"</span>
+&#125;</pre></div>
+
+
+
+<h1 id="subflowsAndConversations">7 Subflows and Conversations</h1>
+<h4>Calling subflows</h4>
+Grails' Web Flow integration also supports subflows. A subflow is like a flow within a flow. For example take this search flow:<p class="paragraph"/><div class="code"><pre>def searchFlow = &#123;
+    displaySearchForm &#123;
+        on(<span class="java&#45;quote">"submit"</span>).to <span class="java&#45;quote">"executeSearch"</span>
+    &#125;
+    executeSearch &#123;
+        action &#123;
+            &#91;results:searchService.executeSearch(params.q)&#93;
+        &#125;
+        on(<span class="java&#45;quote">"success"</span>).to <span class="java&#45;quote">"displayResults"</span>
+        on(<span class="java&#45;quote">"error"</span>).to <span class="java&#45;quote">"displaySearchForm"</span>
+    &#125;
+    displayResults &#123;
+        on(<span class="java&#45;quote">"searchDeeper"</span>).to <span class="java&#45;quote">"extendedSearch"</span>
+        on(<span class="java&#45;quote">"searchAgain"</span>).to <span class="java&#45;quote">"displaySearchForm"</span>
+    &#125;
+    extendedSearch &#123;
+        // Extended search subflow
+        subflow(controller: <span class="java&#45;quote">"searchExtensions"</span>, action: <span class="java&#45;quote">"extendedSearch"</span>)
+        on(<span class="java&#45;quote">"moreResults"</span>).to <span class="java&#45;quote">"displayMoreResults"</span>
+        on(<span class="java&#45;quote">"noResults"</span>).to <span class="java&#45;quote">"displayNoMoreResults"</span>
+    &#125;
+    displayMoreResults()
+    displayNoMoreResults()
+&#125;</pre></div><p class="paragraph"/>It references a subflow in the <code>extendedSearch</code> state. The controller parameter is optional if the subflow is defined in the same controller as the calling flow.
+<blockquote class="note">
+Prior to 1.3.5, the previous subflow call would look like <code>subflow(new SearchExtensionsController().extendedSearchFlow)</code>, with the requirement that the name of the subflow state be the same as the called subflow (minus <code>Flow</code>). This way of calling a subflow is deprecated and only supported for backward compatibility.
+</blockquote><p class="paragraph"/>The subflow is another flow entirely:<p class="paragraph"/><div class="code"><pre>def extendedSearchFlow = &#123;
+    startExtendedSearch &#123;
+        on(<span class="java&#45;quote">"findMore"</span>).to <span class="java&#45;quote">"searchMore"</span>
+        on(<span class="java&#45;quote">"searchAgain"</span>).to <span class="java&#45;quote">"noResults"</span>
+    &#125;
+    searchMore &#123;
+        action &#123;
+           def results = searchService.deepSearch(ctx.conversation.query)
+           <span class="java&#45;keyword">if</span> (!results) <span class="java&#45;keyword">return</span> error()
+           conversation.extendedResults = results
+        &#125;
+        on(<span class="java&#45;quote">"success"</span>).to <span class="java&#45;quote">"moreResults"</span>
+        on(<span class="java&#45;quote">"error"</span>).to <span class="java&#45;quote">"noResults"</span>
+    &#125;
+    moreResults()
+    noResults()
+&#125;</pre></div><p class="paragraph"/>Notice how it places the <code>extendedResults</code> in conversation scope. This scope differs to flow scope as it lets you share state that spans the whole conversation, i.e. a flow execution including all subflows, not just the flow itself. Also notice that the end state (either <code>moreResults</code> or <code>noResults</code> of the subflow triggers the events in the main flow:<p class="paragraph"/><div class="code"><pre>extendedSearch &#123;
+    // Extended search subflow
+    subflow(controller: <span class="java&#45;quote">"searchExtensions"</span>, action: <span class="java&#45;quote">"extendedSearch"</span>)
+    on(<span class="java&#45;quote">"moreResults"</span>).to <span class="java&#45;quote">"displayMoreResults"</span>
+    on(<span class="java&#45;quote">"noResults"</span>).to <span class="java&#45;quote">"displayNoMoreResults"</span>
+&#125;</pre></div><p class="paragraph"/><h4>Subflow input and output</h4>
+Using conversation scope for passing input and output between flows can be compared with using global variables to pass information between methods.
+While this is OK in certain situations, it is usually better to use method arguments and return values. In webflow speak, this means defining input and output arguments for flows.<p class="paragraph"/>Consider following flow for searching a person with a certain expertise:<p class="paragraph"/><div class="code"><pre>def searchFlow = &#123;
+        input &#123;
+            expertise(required: <span class="java&#45;keyword">true</span>)
+            title(<span class="java&#45;quote">"Search person"</span>)
+        &#125;<p class="paragraph"/>        search &#123;
+            onEntry &#123;
+                &#91;personInstanceList: Person.findAllByExpertise(flow.expertise)&#93;
+            &#125;
+            on(<span class="java&#45;quote">"select"</span>) &#123;
+                flow.person = Person.get(params.id)
+            &#125;.to(<span class="java&#45;quote">"selected"</span>)
+            on(<span class="java&#45;quote">"cancel"</span>).to(<span class="java&#45;quote">"cancel"</span>)
+        &#125;<p class="paragraph"/>        selected &#123;
+            output &#123;
+                person &#123;flow.person&#125;
+            &#125;
+        &#125;
+        cancel()
+    &#125;<p class="paragraph"/>&#125;</pre></div><p class="paragraph"/>This flow accepts two input parameters:
+<ul class="star">
+<li>a required expertise argument</li>
+<li>an optional title argument with a default value</li>
+</ul><p class="paragraph"/>All input arguments are stored in flow scope and are, just like local variables, only visible within this flow.<p class="paragraph"/>A flow that contains required input will throw an exception when an execution is started without providing the input. The consequence is that these flows can only be started as subflows.<p class="paragraph"/>Notice how an end state can define one or more named output values. If the value is a closure, this closure will be evaluated at the end of each flow execution.
+If the value is not a closure, the value will be a constant that is only calculated once at flow definition time.<p class="paragraph"/>When a subflow is called, we can provide it a map with input values:<p class="paragraph"/><div class="code"><pre>def newProjectWizardFlow = &#123;
+    ...<p class="paragraph"/>    managerSearch &#123;
+        subflow(controller: <span class="java&#45;quote">"person"</span>, action: <span class="java&#45;quote">"search"</span>,
+                input: &#91;expertise : <span class="java&#45;quote">"management"</span>, title: <span class="java&#45;quote">"Search project manager"</span>&#93;)
+        on(<span class="java&#45;quote">"selected"</span>) &#123;
+            flow.projectInstance.manager = currentEvent.attributes.person
+        &#125;.to <span class="java&#45;quote">"techleadSearch"</span>
+    &#125;<p class="paragraph"/>    techleadSearch &#123;
+        subflow(controller: <span class="java&#45;quote">"person"</span>, action: <span class="java&#45;quote">"search"</span>,
+                input: &#91;expertise : &#123; flow.technology &#125;, title: <span class="java&#45;quote">"Search technical lead"</span>&#93;)
+        on(<span class="java&#45;quote">"selected"</span>) &#123;
+            flow.projectInstance.techlead = currentEvent.attributes.person
+        &#125;.to <span class="java&#45;quote">"projectDetails"</span>
+    &#125;<p class="paragraph"/>    ...<p class="paragraph"/>&#125;</pre></div><p class="paragraph"/>Notice again the difference between constant values like <code>expertise : "management"</code> and dynamic values like <code>expertise : { flow.technology }</code><p class="paragraph"/>The subflow output is available via <code>currentEvent.attributes</code>
+
+
+                    </div>
+                </td>
+                <td id="col2">
+            <div class="local clearfix">
+                <div class="local-title">
+                    <a href="../guide/index.html" target="mainFrame">Quick Reference</a>
+                    <span class="toggle">(<a href="#" onclick="localToggle(); return false;">hide</a>)</span>
+                </div>
+                <div class="menu">
+                    
+                </div>
+            </div>
+        </td>
+            </tr>
+        </table>
+
+        <div id="footer">
+            
+            
+        </div>
+
+
+
+<script type="text/javascript" src="../js/docs.js"></script>
+
+    </body>
+</html>

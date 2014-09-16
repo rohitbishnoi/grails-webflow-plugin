@@ -1,0 +1,150 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+                      "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en">
+<head>
+    <title>6 Data Binding and Validation 2.1.0</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+    <link rel="stylesheet" href="../css/main.css" type="text/css" media="screen, print" title="Style" charset="utf-8"/>
+    <link rel="stylesheet" href="../css/pdf.css" type="text/css" media="print" title="PDF" charset="utf-8"/>
+    <script type="text/javascript">
+function addJsClass() {
+    var classes = document.body.className.split(" ");
+    classes.push("js");
+    document.body.className = classes.join(" ");
+}
+    </script>
+</head>
+
+<body class="body" onload="addJsClass();">
+<div id="navigation">
+    <ul>
+        <li>
+            <div id="nav-summary" onmouseover="toggleNavSummary(false)" onmouseout="toggleNavSummary(true)">
+                <a href="../guide/index.html" class="button">Table of contents</a>
+
+                <div id="nav-summary-childs" style="display:none;">
+                    
+                    <div class="toc-item" style="margin-left:0"><a href="../guide/introduction.html"><strong>1</strong><span>Introduction</span></a>
+                    </div>
+                    
+                    <div class="toc-item" style="margin-left:0"><a href="../guide/startAndEndStates.html"><strong>2</strong><span>Start and End States</span></a>
+                    </div>
+                    
+                    <div class="toc-item" style="margin-left:0"><a href="../guide/actionStatesAndViewStates.html"><strong>3</strong><span>Action States and View States</span></a>
+                    </div>
+                    
+                    <div class="toc-item" style="margin-left:0"><a href="../guide/flowExecutionEvents.html"><strong>4</strong><span>Flow Execution Events</span></a>
+                    </div>
+                    
+                    <div class="toc-item" style="margin-left:0"><a href="../guide/flowScopes.html"><strong>5</strong><span>Flow Scopes</span></a>
+                    </div>
+                    
+                    <div class="toc-item" style="margin-left:0"><a href="../guide/dataBindingAndValidation.html"><strong>6</strong><span>Data Binding and Validation</span></a>
+                    </div>
+                    
+                    <div class="toc-item" style="margin-left:0"><a href="../guide/subflowsAndConversations.html"><strong>7</strong><span>Subflows and Conversations</span></a>
+                    </div>
+                    
+                </div>
+            </div>
+        </li>
+        <li class="separator selected">
+            <a id="ref-button" onclick="localToggle(); return false;" href="#">Quick Reference</a>
+        </li>
+    </ul>
+</div>
+<div id="header">
+    <div class="images clearfix">
+        
+        
+    </div>
+    <p>Integrates Spring Web Flow with Grails</p>
+</div>
+
+
+<table id="colset" border="0" cellpadding="0" cellspacing="0">
+    <tr>
+        <td id="col1">
+            <div id="main" class="corner-all">
+
+                
+                    <div class="toc-item prev-left"><a href="../guide/flowScopes.html">&lt;&lt; <strong>5</strong><span>Flow Scopes</span></a></div>
+                
+
+                <span id='toggle-col1' class="toggle">(<a href="#" onclick="localToggle(); return false;">Quick Reference</a>)</span>
+
+                
+                    <div class="toc-item next-right"><a href="../guide/subflowsAndConversations.html"><strong>7</strong><span>Subflows and Conversations</span> >></a></div>
+                
+
+
+                <div class="project">
+                    <h1>6 Data Binding and Validation - Reference Documentation</h1>
+
+                    <p><strong>Authors:</strong> Graeme Rocher</p>
+
+                    <p><strong>Version:</strong> 2.1.0</p>
+
+                    
+                </div>
+
+                
+
+                
+
+<h1 id="dataBindingAndValidation">6 Data Binding and Validation</h1>
+In the section on <a href="../guide/single.html#startAndEndStates" class="guide">start and end states</a>, the start state in the first example triggered a transition to the <code>enterPersonalDetails</code> state. This state renders a view and waits for the user to enter the required information:<p class="paragraph"/><div class="code"><pre>enterPersonalDetails &#123;
+   on(<span class="java&#45;quote">"submit"</span>).to <span class="java&#45;quote">"enterShipping"</span>
+   on(<span class="java&#45;quote">"<span class="java&#45;keyword">return</span>"</span>).to <span class="java&#45;quote">"showCart"</span>
+&#125;</pre></div><p class="paragraph"/>The view contains a form with two submit buttons that either trigger the submit event or the return event:<p class="paragraph"/><div class="code"><pre><span class="xml&#45;tag">&#60;g:form&#62;</span>
+    <span class="xml&#45;comment">&#60;!&#45;&#45; Other fields &#45;&#45;&#62;</span>
+    <span class="xml&#45;tag">&#60;g:submitButton name=<span class="xml&#45;quote">"submit"</span> value=<span class="xml&#45;quote">"Continue"</span>&#62;</span><span class="xml&#45;tag">&#60;/g:submitButton&#62;</span>
+    <span class="xml&#45;tag">&#60;g:submitButton name=<span class="xml&#45;quote">"return"</span> value=<span class="xml&#45;quote">"Back"</span>&#62;</span><span class="xml&#45;tag">&#60;/g:submitButton&#62;</span>
+<span class="xml&#45;tag">&#60;/g:form&#62;</span></pre></div><p class="paragraph"/>However, what about the capturing the information submitted by the form? To capture the form info we can use a flow transition action:<p class="paragraph"/><div class="code"><pre>enterPersonalDetails &#123;
+   on(<span class="java&#45;quote">"submit"</span>) &#123;
+      flow.person = <span class="java&#45;keyword">new</span> Person(params)
+      !flow.person.validate() ? error() : success()
+   &#125;.to <span class="java&#45;quote">"enterShipping"</span>
+   on(<span class="java&#45;quote">"<span class="java&#45;keyword">return</span>"</span>).to <span class="java&#45;quote">"showCart"</span>
+&#125;</pre></div><p class="paragraph"/>Notice how we perform data binding from request parameters and place the <code>Person</code> instance within <code>flow</code> scope. Also interesting is that we perform guide:validation and invoke the <code>error()</code> method if validation fails. This signals to the flow that the transition should halt and return to the <code>enterPersonalDetails</code> view so valid entries can be entered by the user, otherwise the transition should continue and go to the <code>enterShipping</code> state.<p class="paragraph"/>Like regular actions, flow actions also support the notion of guide:commandObjects by defining the first argument of the closure:<p class="paragraph"/><div class="code"><pre>enterPersonalDetails &#123;
+   on(<span class="java&#45;quote">"submit"</span>) &#123; PersonDetailsCommand cmd &#45;&#62;
+       flow.personDetails = cmd
+      !flow.personDetails.validate() ? error() : success()
+   &#125;.to <span class="java&#45;quote">"enterShipping"</span>
+   on(<span class="java&#45;quote">"<span class="java&#45;keyword">return</span>"</span>).to <span class="java&#45;quote">"showCart"</span>
+&#125;</pre></div>
+
+
+
+                <div style="clear:both;margin-top:15px;"></div>
+                
+                    <div class="toc-item prev-left"><a href="../guide/flowScopes.html">&lt;&lt; <strong>5</strong><span>Flow Scopes</span></a></div>
+                
+                    <div class="toc-item next-right"><a href="../guide/subflowsAndConversations.html"><strong>7</strong><span>Subflows and Conversations</span> >></a></div>
+                
+                <div style="clear:both"></div>
+            </div>
+        </td>
+        <td id="col2">
+            <div class="local clearfix">
+                <div class="local-title">
+                    <a href="../guide/index.html" target="mainFrame">Quick Reference</a>
+                    <span class="toggle">(<a href="#" onclick="localToggle(); return false;">hide</a>)</span>
+                </div>
+                <div class="menu">
+                    
+                </div>
+            </div>
+        </td>
+    </tr>
+</table>
+
+<div id="footer">
+    
+    
+</div>
+
+<script type="text/javascript" src="../js/docs.js"></script>
+
+</body>
+</html>

@@ -1,0 +1,167 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+                      "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en">
+<head>
+    <title>5 Flow Scopes 2.1.0</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+    <link rel="stylesheet" href="../css/main.css" type="text/css" media="screen, print" title="Style" charset="utf-8"/>
+    <link rel="stylesheet" href="../css/pdf.css" type="text/css" media="print" title="PDF" charset="utf-8"/>
+    <script type="text/javascript">
+function addJsClass() {
+    var classes = document.body.className.split(" ");
+    classes.push("js");
+    document.body.className = classes.join(" ");
+}
+    </script>
+</head>
+
+<body class="body" onload="addJsClass();">
+<div id="navigation">
+    <ul>
+        <li>
+            <div id="nav-summary" onmouseover="toggleNavSummary(false)" onmouseout="toggleNavSummary(true)">
+                <a href="../guide/index.html" class="button">Table of contents</a>
+
+                <div id="nav-summary-childs" style="display:none;">
+                    
+                    <div class="toc-item" style="margin-left:0"><a href="../guide/introduction.html"><strong>1</strong><span>Introduction</span></a>
+                    </div>
+                    
+                    <div class="toc-item" style="margin-left:0"><a href="../guide/startAndEndStates.html"><strong>2</strong><span>Start and End States</span></a>
+                    </div>
+                    
+                    <div class="toc-item" style="margin-left:0"><a href="../guide/actionStatesAndViewStates.html"><strong>3</strong><span>Action States and View States</span></a>
+                    </div>
+                    
+                    <div class="toc-item" style="margin-left:0"><a href="../guide/flowExecutionEvents.html"><strong>4</strong><span>Flow Execution Events</span></a>
+                    </div>
+                    
+                    <div class="toc-item" style="margin-left:0"><a href="../guide/flowScopes.html"><strong>5</strong><span>Flow Scopes</span></a>
+                    </div>
+                    
+                    <div class="toc-item" style="margin-left:0"><a href="../guide/dataBindingAndValidation.html"><strong>6</strong><span>Data Binding and Validation</span></a>
+                    </div>
+                    
+                    <div class="toc-item" style="margin-left:0"><a href="../guide/subflowsAndConversations.html"><strong>7</strong><span>Subflows and Conversations</span></a>
+                    </div>
+                    
+                </div>
+            </div>
+        </li>
+        <li class="separator selected">
+            <a id="ref-button" onclick="localToggle(); return false;" href="#">Quick Reference</a>
+        </li>
+    </ul>
+</div>
+<div id="header">
+    <div class="images clearfix">
+        
+        
+    </div>
+    <p>Integrates Spring Web Flow with Grails</p>
+</div>
+
+
+<table id="colset" border="0" cellpadding="0" cellspacing="0">
+    <tr>
+        <td id="col1">
+            <div id="main" class="corner-all">
+
+                
+                    <div class="toc-item prev-left"><a href="../guide/flowExecutionEvents.html">&lt;&lt; <strong>4</strong><span>Flow Execution Events</span></a></div>
+                
+
+                <span id='toggle-col1' class="toggle">(<a href="#" onclick="localToggle(); return false;">Quick Reference</a>)</span>
+
+                
+                    <div class="toc-item next-right"><a href="../guide/dataBindingAndValidation.html"><strong>6</strong><span>Data Binding and Validation</span> >></a></div>
+                
+
+
+                <div class="project">
+                    <h1>5 Flow Scopes - Reference Documentation</h1>
+
+                    <p><strong>Authors:</strong> Graeme Rocher</p>
+
+                    <p><strong>Version:</strong> 2.1.0</p>
+
+                    
+                </div>
+
+                
+
+                
+
+<h1 id="flowScopes">5 Flow Scopes</h1>
+<h4>Scope Basics</h4><p class="paragraph"/>You'll notice from previous examples that we used a special object called <code>flow</code> to store objects within "flow scope". Grails flows have five different scopes you can utilize:
+<ul class="star">
+<li><code>request</code> - Stores an object for the scope of the current request</li>
+<li><code>flash</code> - Stores the object for the current and next request only</li>
+<li><code>flow</code> - Stores objects for the scope of the flow, removing them when the flow reaches an end state</li>
+<li><code>conversation</code> - Stores objects for the scope of the conversation including the root flow and nested subflows</li>
+<li><code>session</code> - Stores objects in the user's session</li>
+</ul><p class="paragraph"/><blockquote class="note">
+Grails service classes can be automatically scoped to a web flow scope. See the documentation on guide:services for more information.
+</blockquote><p class="paragraph"/>Returning a model Map from an action will automatically result in the model being placed in flow scope. For example, using a transition action, you can place objects within <code>flow</code> scope as follows:<p class="paragraph"/><div class="code"><pre>enterPersonalDetails &#123;
+    on(<span class="java&#45;quote">"submit"</span>) &#123;
+        &#91;person: <span class="java&#45;keyword">new</span> Person(params)&#93;
+    &#125;.to <span class="java&#45;quote">"enterShipping"</span>
+   on(<span class="java&#45;quote">"<span class="java&#45;keyword">return</span>"</span>).to <span class="java&#45;quote">"showCart"</span>
+&#125;</pre></div><p class="paragraph"/>Be aware that a new request is always created for each state, so an object placed in request scope in an action state (for example) will not be available in a subsequent view state. Use one of the other scopes to pass objects from one state to another. Also note that Web Flow:
+<ol>
+<li>Moves objects from flash scope to request scope upon transition between states;</li>
+<li>Merges objects from the flow and conversation scopes into the view model before rendering (so you shouldn't include a scope prefix when referencing these objects within a view, e.g. GSP pages).</li>
+</ol><p class="paragraph"/><h4>Flow Scopes and Serialization</h4><p class="paragraph"/>When placing objects in <code>flash</code>, <code>flow</code> or <code>conversation</code> scope they must implement <code>java.io.Serializable</code> or an exception will be thrown. This has an impact on guide:GORM in that domain classes are typically placed within a scope so that they can be rendered in a view. For example consider the following domain class:<p class="paragraph"/><div class="code"><pre>class Book &#123;
+    <span class="java&#45;object">String</span> title
+&#125;</pre></div><p class="paragraph"/>To place an instance of the <code>Book</code> class in a flow scope you will need to modify it as follows:<p class="paragraph"/><div class="code"><pre>class Book <span class="java&#45;keyword">implements</span> Serializable &#123;
+    <span class="java&#45;object">String</span> title
+&#125;</pre></div><p class="paragraph"/>This also impacts associations and closures you declare within a domain class. For example consider this:<p class="paragraph"/><div class="code"><pre>class Book <span class="java&#45;keyword">implements</span> Serializable &#123;
+    <span class="java&#45;object">String</span> title
+    Author author
+&#125;</pre></div><p class="paragraph"/>Here if the <code>Author</code> association is not <code>Serializable</code> you will also get an error. This also impacts closures used in guide:eventsAutoTimestamping such as <code>onLoad</code>, <code>onSave</code> and so on. The following domain class will cause an error if an instance is placed in a flow scope:<p class="paragraph"/><div class="code"><pre>class Book <span class="java&#45;keyword">implements</span> Serializable &#123;<p class="paragraph"/>    <span class="java&#45;object">String</span> title<p class="paragraph"/>    def onLoad = &#123;
+        println <span class="java&#45;quote">"I'm loading"</span>
+    &#125;
+&#125;</pre></div><p class="paragraph"/>The reason is that the assigned block on the <code>onLoad</code> event cannot be serialized. To get around this you should declare all events as <code>transient</code>:<p class="paragraph"/><div class="code"><pre>class Book <span class="java&#45;keyword">implements</span> Serializable &#123;<p class="paragraph"/>    <span class="java&#45;object">String</span> title<p class="paragraph"/>    <span class="java&#45;keyword">transient</span> onLoad = &#123;
+        println <span class="java&#45;quote">"I'm loading"</span>
+    &#125;
+&#125;</pre></div><p class="paragraph"/>or as methods:<p class="paragraph"/><div class="code"><pre>class Book <span class="java&#45;keyword">implements</span> Serializable &#123;<p class="paragraph"/>    <span class="java&#45;object">String</span> title<p class="paragraph"/>    def onLoad() &#123;
+        println <span class="java&#45;quote">"I'm loading"</span>
+    &#125;
+&#125;</pre></div><p class="paragraph"/><blockquote class="note">
+The flow scope contains a reference to the Hibernate session. As a result, any object loaded into the session through a GORM query will also be in the flow and will need to implement Serializable.<p class="paragraph"/>If you don't want your domain class to be Serializable or stored in the flow, then you will need to evict the entity manually before the end of the state:<p class="paragraph"/><div class="code"><pre>flow.persistenceContext.evict(it)</pre></div>
+</blockquote>
+
+
+
+                <div style="clear:both;margin-top:15px;"></div>
+                
+                    <div class="toc-item prev-left"><a href="../guide/flowExecutionEvents.html">&lt;&lt; <strong>4</strong><span>Flow Execution Events</span></a></div>
+                
+                    <div class="toc-item next-right"><a href="../guide/dataBindingAndValidation.html"><strong>6</strong><span>Data Binding and Validation</span> >></a></div>
+                
+                <div style="clear:both"></div>
+            </div>
+        </td>
+        <td id="col2">
+            <div class="local clearfix">
+                <div class="local-title">
+                    <a href="../guide/index.html" target="mainFrame">Quick Reference</a>
+                    <span class="toggle">(<a href="#" onclick="localToggle(); return false;">hide</a>)</span>
+                </div>
+                <div class="menu">
+                    
+                </div>
+            </div>
+        </td>
+    </tr>
+</table>
+
+<div id="footer">
+    
+    
+</div>
+
+<script type="text/javascript" src="../js/docs.js"></script>
+
+</body>
+</html>

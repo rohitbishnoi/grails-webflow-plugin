@@ -1,0 +1,168 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+                      "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en">
+<head>
+    <title>3 Action States and View States 2.1.0</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+    <link rel="stylesheet" href="../css/main.css" type="text/css" media="screen, print" title="Style" charset="utf-8"/>
+    <link rel="stylesheet" href="../css/pdf.css" type="text/css" media="print" title="PDF" charset="utf-8"/>
+    <script type="text/javascript">
+function addJsClass() {
+    var classes = document.body.className.split(" ");
+    classes.push("js");
+    document.body.className = classes.join(" ");
+}
+    </script>
+</head>
+
+<body class="body" onload="addJsClass();">
+<div id="navigation">
+    <ul>
+        <li>
+            <div id="nav-summary" onmouseover="toggleNavSummary(false)" onmouseout="toggleNavSummary(true)">
+                <a href="../guide/index.html" class="button">Table of contents</a>
+
+                <div id="nav-summary-childs" style="display:none;">
+                    
+                    <div class="toc-item" style="margin-left:0"><a href="../guide/introduction.html"><strong>1</strong><span>Introduction</span></a>
+                    </div>
+                    
+                    <div class="toc-item" style="margin-left:0"><a href="../guide/startAndEndStates.html"><strong>2</strong><span>Start and End States</span></a>
+                    </div>
+                    
+                    <div class="toc-item" style="margin-left:0"><a href="../guide/actionStatesAndViewStates.html"><strong>3</strong><span>Action States and View States</span></a>
+                    </div>
+                    
+                    <div class="toc-item" style="margin-left:0"><a href="../guide/flowExecutionEvents.html"><strong>4</strong><span>Flow Execution Events</span></a>
+                    </div>
+                    
+                    <div class="toc-item" style="margin-left:0"><a href="../guide/flowScopes.html"><strong>5</strong><span>Flow Scopes</span></a>
+                    </div>
+                    
+                    <div class="toc-item" style="margin-left:0"><a href="../guide/dataBindingAndValidation.html"><strong>6</strong><span>Data Binding and Validation</span></a>
+                    </div>
+                    
+                    <div class="toc-item" style="margin-left:0"><a href="../guide/subflowsAndConversations.html"><strong>7</strong><span>Subflows and Conversations</span></a>
+                    </div>
+                    
+                </div>
+            </div>
+        </li>
+        <li class="separator selected">
+            <a id="ref-button" onclick="localToggle(); return false;" href="#">Quick Reference</a>
+        </li>
+    </ul>
+</div>
+<div id="header">
+    <div class="images clearfix">
+        
+        
+    </div>
+    <p>Integrates Spring Web Flow with Grails</p>
+</div>
+
+
+<table id="colset" border="0" cellpadding="0" cellspacing="0">
+    <tr>
+        <td id="col1">
+            <div id="main" class="corner-all">
+
+                
+                    <div class="toc-item prev-left"><a href="../guide/startAndEndStates.html">&lt;&lt; <strong>2</strong><span>Start and End States</span></a></div>
+                
+
+                <span id='toggle-col1' class="toggle">(<a href="#" onclick="localToggle(); return false;">Quick Reference</a>)</span>
+
+                
+                    <div class="toc-item next-right"><a href="../guide/flowExecutionEvents.html"><strong>4</strong><span>Flow Execution Events</span> >></a></div>
+                
+
+
+                <div class="project">
+                    <h1>3 Action States and View States - Reference Documentation</h1>
+
+                    <p><strong>Authors:</strong> Graeme Rocher</p>
+
+                    <p><strong>Version:</strong> 2.1.0</p>
+
+                    
+                </div>
+
+                
+
+                
+
+<h1 id="actionStatesAndViewStates">3 Action States and View States</h1>
+<h4>View states</h4><p class="paragraph"/>A view state is a one that doesn't define an <code>action</code> or a <code>redirect</code>. So for example this is a view state:<p class="paragraph"/><div class="code"><pre>enterPersonalDetails &#123;
+   on(<span class="java&#45;quote">"submit"</span>).to <span class="java&#45;quote">"enterShipping"</span>
+   on(<span class="java&#45;quote">"<span class="java&#45;keyword">return</span>"</span>).to <span class="java&#45;quote">"showCart"</span>
+&#125;</pre></div><p class="paragraph"/>It will look for a view called <code>grails-app/views/book/shoppingCart/enterPersonalDetails.gsp</code> by default. Note that the <code>enterPersonalDetails</code> state defines two events: <code>submit</code> and <code>return</code>. The view is responsible for <a href="../guide/single.html#flowExecutionEvents" class="guide">triggering</a> these events. Use the <code>render</code> method to change the view to be rendered:<p class="paragraph"/><div class="code"><pre>enterPersonalDetails &#123;
+   render(view: <span class="java&#45;quote">"enterDetailsView"</span>)
+   on(<span class="java&#45;quote">"submit"</span>).to <span class="java&#45;quote">"enterShipping"</span>
+   on(<span class="java&#45;quote">"<span class="java&#45;keyword">return</span>"</span>).to <span class="java&#45;quote">"showCart"</span>
+&#125;</pre></div><p class="paragraph"/>Now it will look for <code>grails-app/views/book/shoppingCart/enterDetailsView.gsp</code>. Start the <code>view</code> parameter with a / to use a shared view:<p class="paragraph"/><div class="code"><pre>enterPersonalDetails &#123;
+   render(view: <span class="java&#45;quote">"/shared/enterDetailsView"</span>)
+   on(<span class="java&#45;quote">"submit"</span>).to <span class="java&#45;quote">"enterShipping"</span>
+   on(<span class="java&#45;quote">"<span class="java&#45;keyword">return</span>"</span>).to <span class="java&#45;quote">"showCart"</span>
+&#125;</pre></div><p class="paragraph"/>Now it will look for <code>grails-app/views/shared/enterDetailsView.gsp</code><p class="paragraph"/><h4>Action States</h4><p class="paragraph"/>An action state is a state that executes code but does not render a view. The result of the action is used to dictate flow transition. To create an action state you define an action to to be executed. This is done by calling the <code>action</code> method and passing it a block of code to be executed:<p class="paragraph"/><div class="code"><pre>listBooks &#123;
+   action &#123;
+      &#91;bookList: Book.list()&#93;
+   &#125;
+   on(<span class="java&#45;quote">"success"</span>).to <span class="java&#45;quote">"showCatalogue"</span>
+   on(Exception).to <span class="java&#45;quote">"handleError"</span>
+&#125;</pre></div><p class="paragraph"/>As you can see an action looks very similar to a controller action and in fact you can reuse controller actions if you want. If the action successfully returns with no errors the <code>success</code> event will be triggered. In this case since we return a Map, which is regarded as the "model" and is automatically placed in <a href="../guide/single.html#flowScopes" class="guide">flow scope</a>.<p class="paragraph"/>In addition, in the above example we also use an exception handler to deal with errors on the line:<p class="paragraph"/><div class="code"><pre>on(Exception).to <span class="java&#45;quote">"handleError"</span></pre></div><p class="paragraph"/>This makes the flow transition to a state called <code>handleError</code> in the case of an exception.<p class="paragraph"/>You can write more complex actions that interact with the flow request context:<p class="paragraph"/><div class="code"><pre>processPurchaseOrder &#123;
+    action &#123;
+        def a =  flow.address
+        def p = flow.person
+        def pd = flow.paymentDetails
+        def cartItems = flow.cartItems
+        flow.clear()<p class="paragraph"/>        def o = <span class="java&#45;keyword">new</span> Order(person: p, shippingAddress: a, paymentDetails: pd)
+        o.invoiceNumber = <span class="java&#45;keyword">new</span> Random().nextInt(9999999)
+        <span class="java&#45;keyword">for</span> (item in cartItems) &#123; o.addToItems item &#125;
+        o.save()
+        &#91;order: o&#93;
+    &#125;
+    on(<span class="java&#45;quote">"error"</span>).to <span class="java&#45;quote">"confirmPurchase"</span>
+    on(Exception).to <span class="java&#45;quote">"confirmPurchase"</span>
+    on(<span class="java&#45;quote">"success"</span>).to <span class="java&#45;quote">"displayInvoice"</span>
+&#125;</pre></div><p class="paragraph"/>Here is a more complex action that gathers all the information accumulated from the flow scope and creates an <code>Order</code> object. It then returns the order as the model. The important thing to note here is the interaction with the request context and "flow scope".<p class="paragraph"/><h4>Transition Actions</h4><p class="paragraph"/>Another form of action is what is known as a  <em class="italic">transition</em>  action. A transition action is executed directly prior to state transition once an <a href="../guide/single.html#flowExecutionEvents" class="guide">event</a> has been triggered. A simple example of a transition action can be seen below:<p class="paragraph"/><div class="code"><pre>enterPersonalDetails &#123;
+   on(<span class="java&#45;quote">"submit"</span>) &#123;
+       log.trace <span class="java&#45;quote">"Going to enter shipping"</span>
+   &#125;.to <span class="java&#45;quote">"enterShipping"</span>
+   on(<span class="java&#45;quote">"<span class="java&#45;keyword">return</span>"</span>).to <span class="java&#45;quote">"showCart"</span>
+&#125;</pre></div><p class="paragraph"/>Notice how we pass a block of the code to <code>submit</code> event that simply logs the transition. Transition states are very useful for <a href="../guide/single.html#dataBindingAndValidation" class="guide">data binding and validation</a>, which is covered in a later section.
+
+
+
+                <div style="clear:both;margin-top:15px;"></div>
+                
+                    <div class="toc-item prev-left"><a href="../guide/startAndEndStates.html">&lt;&lt; <strong>2</strong><span>Start and End States</span></a></div>
+                
+                    <div class="toc-item next-right"><a href="../guide/flowExecutionEvents.html"><strong>4</strong><span>Flow Execution Events</span> >></a></div>
+                
+                <div style="clear:both"></div>
+            </div>
+        </td>
+        <td id="col2">
+            <div class="local clearfix">
+                <div class="local-title">
+                    <a href="../guide/index.html" target="mainFrame">Quick Reference</a>
+                    <span class="toggle">(<a href="#" onclick="localToggle(); return false;">hide</a>)</span>
+                </div>
+                <div class="menu">
+                    
+                </div>
+            </div>
+        </td>
+    </tr>
+</table>
+
+<div id="footer">
+    
+    
+</div>
+
+<script type="text/javascript" src="../js/docs.js"></script>
+
+</body>
+</html>

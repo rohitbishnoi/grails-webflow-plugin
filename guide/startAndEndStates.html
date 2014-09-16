@@ -1,0 +1,144 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+                      "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en">
+<head>
+    <title>2 Start and End States 2.1.0</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+    <link rel="stylesheet" href="../css/main.css" type="text/css" media="screen, print" title="Style" charset="utf-8"/>
+    <link rel="stylesheet" href="../css/pdf.css" type="text/css" media="print" title="PDF" charset="utf-8"/>
+    <script type="text/javascript">
+function addJsClass() {
+    var classes = document.body.className.split(" ");
+    classes.push("js");
+    document.body.className = classes.join(" ");
+}
+    </script>
+</head>
+
+<body class="body" onload="addJsClass();">
+<div id="navigation">
+    <ul>
+        <li>
+            <div id="nav-summary" onmouseover="toggleNavSummary(false)" onmouseout="toggleNavSummary(true)">
+                <a href="../guide/index.html" class="button">Table of contents</a>
+
+                <div id="nav-summary-childs" style="display:none;">
+                    
+                    <div class="toc-item" style="margin-left:0"><a href="../guide/introduction.html"><strong>1</strong><span>Introduction</span></a>
+                    </div>
+                    
+                    <div class="toc-item" style="margin-left:0"><a href="../guide/startAndEndStates.html"><strong>2</strong><span>Start and End States</span></a>
+                    </div>
+                    
+                    <div class="toc-item" style="margin-left:0"><a href="../guide/actionStatesAndViewStates.html"><strong>3</strong><span>Action States and View States</span></a>
+                    </div>
+                    
+                    <div class="toc-item" style="margin-left:0"><a href="../guide/flowExecutionEvents.html"><strong>4</strong><span>Flow Execution Events</span></a>
+                    </div>
+                    
+                    <div class="toc-item" style="margin-left:0"><a href="../guide/flowScopes.html"><strong>5</strong><span>Flow Scopes</span></a>
+                    </div>
+                    
+                    <div class="toc-item" style="margin-left:0"><a href="../guide/dataBindingAndValidation.html"><strong>6</strong><span>Data Binding and Validation</span></a>
+                    </div>
+                    
+                    <div class="toc-item" style="margin-left:0"><a href="../guide/subflowsAndConversations.html"><strong>7</strong><span>Subflows and Conversations</span></a>
+                    </div>
+                    
+                </div>
+            </div>
+        </li>
+        <li class="separator selected">
+            <a id="ref-button" onclick="localToggle(); return false;" href="#">Quick Reference</a>
+        </li>
+    </ul>
+</div>
+<div id="header">
+    <div class="images clearfix">
+        
+        
+    </div>
+    <p>Integrates Spring Web Flow with Grails</p>
+</div>
+
+
+<table id="colset" border="0" cellpadding="0" cellspacing="0">
+    <tr>
+        <td id="col1">
+            <div id="main" class="corner-all">
+
+                
+                    <div class="toc-item prev-left"><a href="../guide/introduction.html">&lt;&lt; <strong>1</strong><span>Introduction</span></a></div>
+                
+
+                <span id='toggle-col1' class="toggle">(<a href="#" onclick="localToggle(); return false;">Quick Reference</a>)</span>
+
+                
+                    <div class="toc-item next-right"><a href="../guide/actionStatesAndViewStates.html"><strong>3</strong><span>Action States and View States</span> >></a></div>
+                
+
+
+                <div class="project">
+                    <h1>2 Start and End States - Reference Documentation</h1>
+
+                    <p><strong>Authors:</strong> Graeme Rocher</p>
+
+                    <p><strong>Version:</strong> 2.1.0</p>
+
+                    
+                </div>
+
+                
+
+                
+
+<h1 id="startAndEndStates">2 Start and End States</h1>
+As mentioned before a flow has a defined start and end state. A start state is the state which is entered when a user first initiates a conversation (or flow). The start state of a Grails flow is the first method call that takes a block. For example:<p class="paragraph"/><div class="code"><pre>class BookController &#123;
+   &#8230;
+   def shoppingCartFlow =&#123;
+       showCart &#123;
+           on(<span class="java&#45;quote">"checkout"</span>).to <span class="java&#45;quote">"enterPersonalDetails"</span>
+           on(<span class="java&#45;quote">"continueShopping"</span>).to <span class="java&#45;quote">"displayCatalogue"</span>
+       &#125;
+       &#8230;
+       displayCatalogue &#123;
+           redirect(controller: <span class="java&#45;quote">"catalogue"</span>, action: <span class="java&#45;quote">"show"</span>)
+       &#125;
+       displayInvoice()
+   &#125;
+&#125;</pre></div><p class="paragraph"/>Here the <code>showCart</code> node is the start state of the flow. Since the showCart state doesn't define an action or redirect it is assumed be a <a href="../guide/single.html#actionStatesAndViewStates" class="guide">view state</a> that, by convention, refers to the view  <code>grails-app/views/book/shoppingCart/showCart.gsp</code>.<p class="paragraph"/>Notice that unlike regular controller actions, the views are stored within a directory that matches the name of the flow: <code>grails-app/views/book/shoppingCart</code>.<p class="paragraph"/>The <code>shoppingCart</code> flow also has two possible end states. The first is <code>displayCatalogue</code> which performs an external redirect to another controller and action, thus exiting the flow. The second is <code>displayInvoice</code> which is an end state as it has no events at all and will simply render a view called <code>grails-app/views/book/shoppingCart/displayInvoice.gsp</code> whilst ending the flow at the same time.<p class="paragraph"/>Once a flow has ended it can only be resumed from the start state, in this case <code>showCart</code>, and not from any other state.
+
+
+
+                <div style="clear:both;margin-top:15px;"></div>
+                
+                    <div class="toc-item prev-left"><a href="../guide/introduction.html">&lt;&lt; <strong>1</strong><span>Introduction</span></a></div>
+                
+                    <div class="toc-item next-right"><a href="../guide/actionStatesAndViewStates.html"><strong>3</strong><span>Action States and View States</span> >></a></div>
+                
+                <div style="clear:both"></div>
+            </div>
+        </td>
+        <td id="col2">
+            <div class="local clearfix">
+                <div class="local-title">
+                    <a href="../guide/index.html" target="mainFrame">Quick Reference</a>
+                    <span class="toggle">(<a href="#" onclick="localToggle(); return false;">hide</a>)</span>
+                </div>
+                <div class="menu">
+                    
+                </div>
+            </div>
+        </td>
+    </tr>
+</table>
+
+<div id="footer">
+    
+    
+</div>
+
+<script type="text/javascript" src="../js/docs.js"></script>
+
+</body>
+</html>

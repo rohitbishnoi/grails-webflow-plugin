@@ -1,0 +1,156 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+                      "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en">
+<head>
+    <title>4 Flow Execution Events 2.1.0</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+    <link rel="stylesheet" href="../css/main.css" type="text/css" media="screen, print" title="Style" charset="utf-8"/>
+    <link rel="stylesheet" href="../css/pdf.css" type="text/css" media="print" title="PDF" charset="utf-8"/>
+    <script type="text/javascript">
+function addJsClass() {
+    var classes = document.body.className.split(" ");
+    classes.push("js");
+    document.body.className = classes.join(" ");
+}
+    </script>
+</head>
+
+<body class="body" onload="addJsClass();">
+<div id="navigation">
+    <ul>
+        <li>
+            <div id="nav-summary" onmouseover="toggleNavSummary(false)" onmouseout="toggleNavSummary(true)">
+                <a href="../guide/index.html" class="button">Table of contents</a>
+
+                <div id="nav-summary-childs" style="display:none;">
+                    
+                    <div class="toc-item" style="margin-left:0"><a href="../guide/introduction.html"><strong>1</strong><span>Introduction</span></a>
+                    </div>
+                    
+                    <div class="toc-item" style="margin-left:0"><a href="../guide/startAndEndStates.html"><strong>2</strong><span>Start and End States</span></a>
+                    </div>
+                    
+                    <div class="toc-item" style="margin-left:0"><a href="../guide/actionStatesAndViewStates.html"><strong>3</strong><span>Action States and View States</span></a>
+                    </div>
+                    
+                    <div class="toc-item" style="margin-left:0"><a href="../guide/flowExecutionEvents.html"><strong>4</strong><span>Flow Execution Events</span></a>
+                    </div>
+                    
+                    <div class="toc-item" style="margin-left:0"><a href="../guide/flowScopes.html"><strong>5</strong><span>Flow Scopes</span></a>
+                    </div>
+                    
+                    <div class="toc-item" style="margin-left:0"><a href="../guide/dataBindingAndValidation.html"><strong>6</strong><span>Data Binding and Validation</span></a>
+                    </div>
+                    
+                    <div class="toc-item" style="margin-left:0"><a href="../guide/subflowsAndConversations.html"><strong>7</strong><span>Subflows and Conversations</span></a>
+                    </div>
+                    
+                </div>
+            </div>
+        </li>
+        <li class="separator selected">
+            <a id="ref-button" onclick="localToggle(); return false;" href="#">Quick Reference</a>
+        </li>
+    </ul>
+</div>
+<div id="header">
+    <div class="images clearfix">
+        
+        
+    </div>
+    <p>Integrates Spring Web Flow with Grails</p>
+</div>
+
+
+<table id="colset" border="0" cellpadding="0" cellspacing="0">
+    <tr>
+        <td id="col1">
+            <div id="main" class="corner-all">
+
+                
+                    <div class="toc-item prev-left"><a href="../guide/actionStatesAndViewStates.html">&lt;&lt; <strong>3</strong><span>Action States and View States</span></a></div>
+                
+
+                <span id='toggle-col1' class="toggle">(<a href="#" onclick="localToggle(); return false;">Quick Reference</a>)</span>
+
+                
+                    <div class="toc-item next-right"><a href="../guide/flowScopes.html"><strong>5</strong><span>Flow Scopes</span> >></a></div>
+                
+
+
+                <div class="project">
+                    <h1>4 Flow Execution Events - Reference Documentation</h1>
+
+                    <p><strong>Authors:</strong> Graeme Rocher</p>
+
+                    <p><strong>Version:</strong> 2.1.0</p>
+
+                    
+                </div>
+
+                
+
+                
+
+<h1 id="flowExecutionEvents">4 Flow Execution Events</h1>
+In order to  <em class="italic">transition</em>  execution of a flow from one state to the next you need some way of trigger an  <em class="italic">event</em>  that indicates what the flow should do next. Events can be triggered from either view states or action states.<p class="paragraph"/><h4>Triggering Events from a View State</h4><p class="paragraph"/>As discussed previously the start state of the flow in a previous code listing deals with two possible events. A <code>checkout</code> event and a <code>continueShopping</code> event:<p class="paragraph"/><div class="code"><pre>def shoppingCartFlow = &#123;
+    showCart &#123;
+        on(<span class="java&#45;quote">"checkout"</span>).to <span class="java&#45;quote">"enterPersonalDetails"</span>
+        on(<span class="java&#45;quote">"continueShopping"</span>).to <span class="java&#45;quote">"displayCatalogue"</span>
+    &#125;
+    &#8230;
+&#125;</pre></div><p class="paragraph"/>Since the <code>showCart</code> event is a view state it will render the view <code>grails-app/book/shoppingCart/showCart.gsp</code>. Within this view you need to have components that trigger flow execution. On a form this can be done use the tags tag:<p class="paragraph"/><div class="code"><pre><span class="xml&#45;tag">&#60;g:form&#62;</span>
+    <span class="xml&#45;tag">&#60;g:submitButton name=<span class="xml&#45;quote">"continueShopping"</span> value=<span class="xml&#45;quote">"Continue Shopping"</span> /&#62;</span>
+    <span class="xml&#45;tag">&#60;g:submitButton name=<span class="xml&#45;quote">"checkout"</span> value=<span class="xml&#45;quote">"Checkout"</span> /&#62;</span>
+<span class="xml&#45;tag">&#60;/g:form&#62;</span></pre></div><p class="paragraph"/>The form automatically submits back to the <code>shoppingCart</code> flow. The name attribute of each tags tag signals which event will be triggered. If you don't have a form you can also trigger an event with the tags tag as follows:<p class="paragraph"/><div class="code"><pre><span class="xml&#45;tag">&#60;g:link event=<span class="xml&#45;quote">"checkout"</span> /&#62;</span></pre></div><p class="paragraph"/><blockquote class="note">
+Prior to 2.0.0, it was required to specify the controller and/or action in forms and links, which caused the url to change when entering a subflow state. When the controller and action are not specified,
+all url's are relative to the main flow execution url, which makes your flows reusable as subflows and prevents issues with the browser's back button.
+</blockquote><p class="paragraph"/><h4>Triggering Events from an Action</h4><p class="paragraph"/>To trigger an event from an <code>action</code> you invoke a method. For example there is the built in <code>error()</code> and <code>success()</code> methods. The example below triggers the <code>error()</code> event on validation failure in a transition action:<p class="paragraph"/><div class="code"><pre>enterPersonalDetails &#123;
+   on(<span class="java&#45;quote">"submit"</span>) &#123;
+         def p = <span class="java&#45;keyword">new</span> Person(params)
+         flow.person = p
+         <span class="java&#45;keyword">if</span> (!p.validate()) <span class="java&#45;keyword">return</span> error()
+   &#125;.to <span class="java&#45;quote">"enterShipping"</span>
+   on(<span class="java&#45;quote">"<span class="java&#45;keyword">return</span>"</span>).to <span class="java&#45;quote">"showCart"</span>
+&#125;</pre></div><p class="paragraph"/>In this case because of the error the transition action will make the flow go back to the <code>enterPersonalDetails</code> state.<p class="paragraph"/>With an action state you can also trigger events to redirect flow:<p class="paragraph"/><div class="code"><pre>shippingNeeded &#123;
+   action &#123;
+       <span class="java&#45;keyword">if</span> (params.shippingRequired) yes()
+       <span class="java&#45;keyword">else</span> no()
+   &#125;
+   on(<span class="java&#45;quote">"yes"</span>).to <span class="java&#45;quote">"enterShipping"</span>
+   on(<span class="java&#45;quote">"no"</span>).to <span class="java&#45;quote">"enterPayment"</span>
+&#125;</pre></div><p class="paragraph"/>
+
+
+                <div style="clear:both;margin-top:15px;"></div>
+                
+                    <div class="toc-item prev-left"><a href="../guide/actionStatesAndViewStates.html">&lt;&lt; <strong>3</strong><span>Action States and View States</span></a></div>
+                
+                    <div class="toc-item next-right"><a href="../guide/flowScopes.html"><strong>5</strong><span>Flow Scopes</span> >></a></div>
+                
+                <div style="clear:both"></div>
+            </div>
+        </td>
+        <td id="col2">
+            <div class="local clearfix">
+                <div class="local-title">
+                    <a href="../guide/index.html" target="mainFrame">Quick Reference</a>
+                    <span class="toggle">(<a href="#" onclick="localToggle(); return false;">hide</a>)</span>
+                </div>
+                <div class="menu">
+                    
+                </div>
+            </div>
+        </td>
+    </tr>
+</table>
+
+<div id="footer">
+    
+    
+</div>
+
+<script type="text/javascript" src="../js/docs.js"></script>
+
+</body>
+</html>

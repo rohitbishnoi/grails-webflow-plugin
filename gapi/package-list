@@ -1,0 +1,10 @@
+DefaultPackage
+grails.test
+grails.webflow.test.mixin
+org.codehaus.groovy.grails.webflow
+org.codehaus.groovy.grails.webflow.context.servlet
+org.codehaus.groovy.grails.webflow.engine.builder
+org.codehaus.groovy.grails.webflow.execution
+org.codehaus.groovy.grails.webflow.mvc.servlet
+org.codehaus.groovy.grails.webflow.persistence
+org.codehaus.groovy.grails.webflow.scope
