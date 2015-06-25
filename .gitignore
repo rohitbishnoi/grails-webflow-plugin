@@ -6,4 +6,4 @@ unzipped
 *.log
 grails-webflow-plugin.iml
 build
-.idea
+.idea/
