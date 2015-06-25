@@ -4,3 +4,6 @@ target
 unzipped
 .settings/
 *.log
+grails-webflow-plugin.iml
+build
+.idea
